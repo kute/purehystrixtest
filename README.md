@@ -12,3 +12,7 @@ https://github.com/Netflix-Skunkworks/hystrix-dashboard
 
 dashboard: cd ~/work/gitwork/standalone-hystrix-dashboard && ./gradlew runDashboard
            then visit http://localhost:7979/hystrix-dashboard/
+           
+https://github.com/Netflix/Hystrix/wiki/Metrics-and-Monitoring
+
+https://it.520mwx.com/view/3835

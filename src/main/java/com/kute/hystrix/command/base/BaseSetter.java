@@ -4,6 +4,8 @@ import com.netflix.hystrix.*;
 
 /**
  * created by bailong001 on 2018/10/02 20:13
+ *
+ * https://github.com/Netflix/Hystrix/wiki/Configuration
  */
 public interface BaseSetter {
 
@@ -14,23 +16,6 @@ public interface BaseSetter {
             .andCommandKey(HystrixCommandKey.Factory.asKey("hystrix.pure.command"))
             .andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("hystrix.pure.threadpool"))
             .andCommandPropertiesDefaults(
-                    /**
-                     *
-                     * default_executionIsolationStrategy = HystrixCommandProperties.ExecutionIsolationStrategy.THREAD;
-                     default_executionIsolationThreadInterruptOnTimeout = true;
-                     default_executionIsolationThreadInterruptOnFutureCancel = false;
-                     default_metricsRollingPercentileEnabled = true;
-                     default_requestCacheEnabled = true;
-                     default_fallbackIsolationSemaphoreMaxConcurrentRequests = 10;
-                     default_fallbackEnabled = true;
-                     default_executionIsolationSemaphoreMaxConcurrentRequests = 10;
-                     default_requestLogEnabled = true;
-                     default_circuitBreakerEnabled = true;
-                     default_metricsRollingPercentileWindow = 60000;
-                     default_metricsRollingPercentileWindowBuckets = 6;
-                     default_metricsRollingPercentileBucketSize = 100;
-                     default_metricsHealthSnapshotIntervalInMilliseconds = 500;
-                     */
                     HystrixCommandProperties.Setter()
 
                             //设置断路器是否打开的错误请求阀值
@@ -64,7 +49,7 @@ public interface BaseSetter {
             );
 
     HystrixObservableCommand.Setter observableSetter = HystrixObservableCommand.Setter
-            .withGroupKey(HystrixCommandGroupKey.Factory.asKey(""))
+            .withGroupKey(HystrixCommandGroupKey.Factory.asKey("hystrix.pure.group"))
             // 每个CommandKey代表一个依赖抽象,相同的依赖要使用相同的CommandKey名称,依赖隔离的根本就是对相同CommandKey的依赖做隔离.
             .andCommandKey(HystrixCommandKey.Factory.asKey("hystrix.pure.command"))
             .andCommandPropertiesDefaults(

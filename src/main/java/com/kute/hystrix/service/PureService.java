@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * created by bailong001 on 2018/09/30 15:28
  */
+
 /**
  * 优先级：
  * 1、使用@HystrixCommand的fallbackMethod属性定义命令回退
@@ -142,8 +143,8 @@ public class PureService {
 
     /**
      * 同步执行
-     *
-     *
+     * <p>
+     * <p>
      * 支持的类型：
      * 1、sync command with sync fallback
      * 2、async command with sync fallback
@@ -169,7 +170,7 @@ public class PureService {
             fallbackMethod = "getUserDataFromOutServiceFallBack"
     )
     public UserData getUserDataFromOutServiceSync(Long id) {
-        if(null == id) {
+        if (null == id) {
             return null;
         }
         ResponseEntity<UserData> responseEntity = restTemplate.getForEntity("http://localhost:8090/out/getuser/" + id, UserData.class);
@@ -180,6 +181,7 @@ public class PureService {
 
     /**
      * 异步:返回Future
+     *
      * @param id
      * @return
      */
@@ -200,7 +202,7 @@ public class PureService {
             fallbackMethod = "getUserDataFromOutServiceFallBack"
     )
     public Future<UserData> getUserDataFromOutServiceAsync(Long id) {
-        if(null == id) {
+        if (null == id) {
             return null;
         }
         return new AsyncResult<UserData>() {
@@ -216,6 +218,7 @@ public class PureService {
 
     /**
      * 响应式
+     *
      * @param id
      * @return
      */
@@ -236,19 +239,19 @@ public class PureService {
             fallbackMethod = "getUserDataFromOutServiceFallBack"
     )
     public Observable<UserData> getUserDataFromOutServiceReactive(Long id) {
-        if(null == id) {
+        if (null == id) {
             return null;
         }
         return Observable.create(subscriber -> {
-            if(!subscriber.isUnsubscribed()) {
-                try{
+            if (!subscriber.isUnsubscribed()) {
+                try {
                     ResponseEntity<UserData> responseEntity = restTemplate.getForEntity("http://localhost:8090/out/getuser/" + id, UserData.class);
                     // 模拟 网络抖动
                     sleep(RandomUtils.nextLong(50, 10000));
                     UserData userData = responseEntity.getBody();
 
                     subscriber.onNext(userData);
-                } catch(Exception e){
+                } catch (Exception e) {
                     subscriber.onError(e);
                 }
                 subscriber.onCompleted();
@@ -258,9 +261,9 @@ public class PureService {
 
     /**
      * 降级 方法
+     *
      * @param id
-     * @param e
-     *        引发降级异常，为扩展参数
+     * @param e  引发降级异常，为扩展参数
      * @return
      */
     public UserData getUserDataFromOutServiceFallBack(Long id, Throwable e) {
@@ -270,6 +273,7 @@ public class PureService {
 
     /**
      * 默认降级策略
+     *
      * @param e
      * @return
      */

@@ -14,10 +14,10 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * created by bailong001 on 2018/10/03 17:15
  */
-@Component
+//@Component
 public class HystrixCatHandler implements BeanFactoryPostProcessor {
 
-    private static String appkey = "com.sankuai.hotel.dealing";
+    private static String appkey = "pure.hystrix.test";
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {

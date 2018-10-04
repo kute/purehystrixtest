@@ -1,12 +1,11 @@
 package com.kute.hystrix.controller;
 
-import com.kute.hystrix.command.GetMultiUserCommand;
-import com.kute.hystrix.command.GetUserCollapser;
-import com.kute.hystrix.command.GetUserCommand;
+import com.kute.hystrix.command.*;
 import com.kute.hystrix.controller.base.BaseController;
 import com.kute.hystrix.domain.UserData;
 import com.kute.hystrix.service.PureService;
 import com.netflix.config.ConfigurationManager;
+import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixRequestLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +46,7 @@ public class PureController extends BaseController {
     @GetMapping("/getuser/{id}")
     public UserData getUserData(@PathVariable Long id) {
 
-        // 动态设置值
+//        // 动态设置值
         ConfigurationManager.getConfigInstance().setProperty("dynamic.default.sleep.millis", 4000L);
 
         GetUserCommand command = new GetUserCommand(pureService, id);

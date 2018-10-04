@@ -60,11 +60,20 @@ public class PureTest {
     @Test
     public void test2() throws InterruptedException, ExecutionException, TimeoutException {
 
-        GetUserCommand command = new GetUserCommand(pureService, 22L);
+        HystrixRequestContext context = HystrixRequestContext.initializeContext();
 
-        Future<UserData> future = command.queue();
+        try{
 
-        System.out.println(future.get(30, TimeUnit.SECONDS));
+            GetUserCommand command = new GetUserCommand(pureService, 22L);
+
+            Future<UserData> future = command.queue();
+
+            System.out.println(future.get(30, TimeUnit.SECONDS));
+
+        } finally{
+            context.shutdown();
+        }
+
 
     }
 

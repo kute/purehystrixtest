@@ -1,10 +1,10 @@
 package com.kute.hystrix.command.base;
 
-import com.kute.hystrix.config.HystrixConfig;
-import com.netflix.hystrix.*;
+import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixThreadPoolKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by kute on 2017/12/9.
