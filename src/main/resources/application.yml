@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: purehystrixtest
+  profiles:
+    active: test
+
+server:
+  port: 8090
+
+
+hystrix:
+  metrics:
+    enabled: true
+    polling-interval-ms: 200
+  command:
+    groupKey: kute
+    commandKey: kute-command
+  threadPoolKey: kute-pool
+
+
+
+
+
+
+
+
+
+
+
+
