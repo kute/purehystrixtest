@@ -16,3 +16,5 @@ dashboard: cd ~/work/gitwork/standalone-hystrix-dashboard && ./gradlew runDashbo
 https://github.com/Netflix/Hystrix/wiki/Metrics-and-Monitoring
 
 https://it.520mwx.com/view/3835
+
+https://github.com/Netflix/Hystrix/wiki/Configuration

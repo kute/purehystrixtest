@@ -5,6 +5,7 @@ import com.google.common.base.Joiner;
 import com.kute.hystrix.command.base.BaseHystrixCommand;
 import com.kute.hystrix.domain.UserData;
 import com.kute.hystrix.service.PureService;
+import com.netflix.hystrix.HystrixCommandKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class BatchGetUserCommand extends BaseHystrixCommand<List<UserData>> {
     private List<Long> idList;
 
     public BatchGetUserCommand(RestTemplate restTemplate, List<Long> idList) {
+        super(setter.andCommandKey(HystrixCommandKey.Factory.asKey(BatchGetUserCommand.class.getSimpleName())));
         this.restTemplate = restTemplate;
         this.idList = idList;
     }
@@ -38,6 +40,6 @@ public class BatchGetUserCommand extends BaseHystrixCommand<List<UserData>> {
 
     @Override
     protected List<UserData> getFallback() {
-        return idList.stream().map(id -> UserData.randUser(id)).collect(Collectors.toList());
+        return idList.stream().map(UserData::randUser).collect(Collectors.toList());
     }
 }

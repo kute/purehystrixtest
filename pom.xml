@@ -49,16 +49,21 @@
             <artifactId>junit</artifactId>
         </dependency>
 
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-hystrix</artifactId>
-			<version>1.4.5.RELEASE</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.cloud</groupId>-->
+			<!--<artifactId>spring-cloud-starter-hystrix</artifactId>-->
+			<!--<version>1.4.5.RELEASE</version>-->
+		<!--</dependency>-->
         <!-- spring-cloud-starter-hystrix 需要依赖 -->
         <dependency>
             <groupId>com.netflix.archaius</groupId>
             <artifactId>archaius-core</artifactId>
             <version>0.7.6</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>1.8</version>
         </dependency>
 
 		<!-- hystrix -->
@@ -66,6 +71,12 @@
 			<groupId>com.netflix.hystrix</groupId>
 			<artifactId>hystrix-core</artifactId>
 			<version>${hystrix.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.netflix.archaius</groupId>
+                    <artifactId>archaius-core</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
 		<!-- 基于 event-stream 推送计数统计 -->
 		<dependency>
@@ -101,6 +112,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.6</version>
         </dependency>
 
         <dependency>

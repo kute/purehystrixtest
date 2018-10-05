@@ -1,6 +1,7 @@
 package com.kute.hystrix.command;
 
 import com.kute.hystrix.command.base.BaseHystrixCommand;
+import com.netflix.hystrix.HystrixCommandKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,7 @@ public class ExceptionCommand extends BaseHystrixCommand<String> {
     private Exception exception;
 
     public ExceptionCommand(Exception exception) {
+        super(setter.andCommandKey(HystrixCommandKey.Factory.asKey(ExceptionCommand.class.getSimpleName())));
         this.exception = exception;
     }
 

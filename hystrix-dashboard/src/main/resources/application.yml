@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: pure-hystrix-dashboard
+  profiles:
+    active: test
+
+server:
+  port: 8091
+
+# turbine config
+turbine:
+  aggregator:
+  clusterConfig: pure-hystrix-cluster-name
+  appConfig: pure-hystrix-app-name

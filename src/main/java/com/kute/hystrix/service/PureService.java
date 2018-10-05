@@ -4,6 +4,7 @@ import com.kute.hystrix.domain.UserData;
 import com.kute.hystrix.util.CacheUtil;
 import com.netflix.hystrix.HystrixCommandProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCollapser;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.netflix.hystrix.contrib.javanica.command.AsyncResult;
@@ -20,9 +21,11 @@ import org.springframework.web.client.RestTemplate;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
+import rx.functions.Action1;
 import rx.observables.AsyncOnSubscribe;
 import rx.schedulers.Schedulers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -132,10 +135,10 @@ public class PureService {
         return Observable.create((Observable.OnSubscribe<UserData>) subscriber -> {
             // get cache data
             if (!subscriber.isUnsubscribed()) {
-                for (Long id : idList) {
+                idList.forEach(id -> {
                     UserData userData = CacheUtil.getFromLocalCache(id);
                     subscriber.onNext(userData);
-                }
+                });
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.immediate());
@@ -269,6 +272,28 @@ public class PureService {
     public UserData getUserDataFromOutServiceFallBack(Long id, Throwable e) {
         LOGGER.info("getUserDataFromOutServiceFallBack is executing:{}", id);
         return UserData.randUser(id);
+    }
+
+    /**
+     * 请求合并 注解示例
+     * @param id
+     * @return
+     */
+    @HystrixCollapser(batchMethod = "batchGetUserData", scope = com.netflix.hystrix.HystrixCollapser.Scope.GLOBAL, collapserProperties = {
+            @HystrixProperty(name = HystrixPropertiesManager.TIMER_DELAY_IN_MILLISECONDS, value = "100"),
+            @HystrixProperty(name = HystrixPropertiesManager.MAX_REQUESTS_IN_BATCH, value = "10")
+    })
+    public UserData getUserDataMergeRequest(Long id) {
+        return getUserDataFromOutServiceSync(id);
+    }
+
+    public List<UserData> batchGetUserData(List<Long> idList) {
+        Observable<UserData> observable = getMultiUser(idList);
+        List<UserData> resultList = new ArrayList<>(idList.size());
+        observable.subscribe(userData -> {
+            resultList.add(userData);
+        });
+        return resultList;
     }
 
     /**

@@ -1,6 +1,8 @@
 package com.kute.hystrix.command.base;
 
 import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
+import com.netflix.hystrix.HystrixCommandProperties;
 import com.netflix.hystrix.HystrixObservableCommand;
 import rx.Observable;
 
@@ -13,7 +15,33 @@ import rx.Observable;
  * 2、HystrixCommand的run方法是用内部线程池的线程来执行的，而HystrixObservableCommand则是由调用方(例如Tomcat容器)的线程来执行的
  * 3、HystrixCommand一次只能发送单条数据返回，而HystrixObservableCommand一次可以发送多条数据返回
  */
-public abstract class BaseHystrixObservableCommand<T> extends HystrixObservableCommand<T> implements BaseSetter {
+public abstract class BaseHystrixObservableCommand<T> extends HystrixObservableCommand<T> implements IHystrixHandler {
+
+    protected static final HystrixObservableCommand.Setter observableSetter = HystrixObservableCommand.Setter
+            .withGroupKey(HystrixCommandGroupKey.Factory.asKey("hystrix.pure.group"))
+            // 每个CommandKey代表一个依赖抽象,相同的依赖要使用相同的CommandKey名称,依赖隔离的根本就是对相同CommandKey的依赖做隔离.
+            .andCommandKey(HystrixCommandKey.Factory.asKey("hystrix.pure.command"))
+            .andCommandPropertiesDefaults(
+                    HystrixCommandProperties.Setter()
+
+                            //设置断路器是否打开的错误请求阀值
+                            .withCircuitBreakerRequestVolumeThreshold(2)
+                            //设置 在回路被打开，拒绝请求到再次尝试请求并决定回路是否继续打开的时间,单位毫秒，默认为5秒
+                            .withCircuitBreakerSleepWindowInMilliseconds(60 * 1000)
+                            //设置 当错误率%达到多少时断路器打开
+                            .withCircuitBreakerErrorThresholdPercentage(80)
+                            .withFallbackEnabled(true)
+                            //隔离策略:固定大小线程池
+                            .withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.THREAD)
+                            //设置是否在超时时开启中断:默认true
+                            .withExecutionIsolationThreadInterruptOnTimeout(true)
+                            //设置启用超时时间设置:默认 true
+                            .withExecutionTimeoutEnabled(true)
+                            //执行的超时时间设置
+                            .withExecutionTimeoutInMilliseconds(5000)
+                    // 使用信号量隔离时，命令调用最大的并发数,默认:10
+//                            .withExecutionIsolationSemaphoreMaxConcurrentRequests(100)
+            );
 
     protected BaseHystrixObservableCommand(HystrixCommandGroupKey group) {
         super(group);

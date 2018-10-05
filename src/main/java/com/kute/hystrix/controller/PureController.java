@@ -1,12 +1,14 @@
 package com.kute.hystrix.controller;
 
-import com.kute.hystrix.command.*;
+import com.kute.hystrix.command.GetMultiUserCommand;
+import com.kute.hystrix.command.GetUserCollapser;
+import com.kute.hystrix.command.GetUserCommand;
 import com.kute.hystrix.controller.base.BaseController;
 import com.kute.hystrix.domain.UserData;
 import com.kute.hystrix.service.PureService;
 import com.netflix.config.ConfigurationManager;
-import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixRequestLog;
+import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import rx.Observable;
 import rx.Observer;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Func0;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.LongStream;
 
 /**
@@ -47,7 +46,7 @@ public class PureController extends BaseController {
     public UserData getUserData(@PathVariable Long id) {
 
 //        // 动态设置值
-        ConfigurationManager.getConfigInstance().setProperty("dynamic.default.sleep.millis", 4000L);
+//        ConfigurationManager.getConfigInstance().setProperty("dynamic.default.sleep.millis", RandomUtils.nextLong(500, 4000));
 
         GetUserCommand command = new GetUserCommand(pureService, id);
         return command.execute();

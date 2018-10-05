@@ -4,6 +4,8 @@ import com.google.common.base.Joiner;
 import com.kute.hystrix.command.base.BaseHystrixCommand;
 import com.kute.hystrix.domain.UserData;
 import com.kute.hystrix.service.PureService;
+import com.kute.hystrix.util.PureConstant;
+import com.netflix.config.ConfigurationManager;
 import com.netflix.config.DynamicLongProperty;
 import com.netflix.config.DynamicPropertyFactory;
 import com.netflix.hystrix.HystrixCommandKey;
@@ -25,19 +27,24 @@ public class GetUserCommand extends BaseHystrixCommand<UserData> {
     private Long id;
 
     /**
-     * 动态 设置属性
+     * 动态 获取属性
      */
-    private final static DynamicLongProperty dynamicSleep = DynamicPropertyFactory.getInstance().getLongProperty("dynamic.default.sleep.millis", 4000L);
+    private final static DynamicLongProperty dynamicSleep = DynamicPropertyFactory.getInstance().getLongProperty(PureConstant.DYNAMIC_GETUSER_COMMAND_KEY, 4000L);
 
     public GetUserCommand(PureService pureService, Long id) {
+        super(setter.andCommandKey(HystrixCommandKey.Factory.asKey(GetUserCommand.class.getSimpleName())));
+
         this.pureService = pureService;
         this.id = id;
     }
 
     @Override
     protected UserData run() throws Exception {
-        LOGGER.info("GetUserCommand is executing for param={}", id);
-        return pureService.getDataAfterSleep(id, dynamicSleep.get());
+        // 动态获取配置
+        Long millis = this.getProperty(PureConstant.DYNAMIC_GETUSER_COMMAND_KEY, 4000L);
+//        Long millis = dynamicSleep.get();
+        LOGGER.info("GetUserCommand is executing for param={}, sleep={}", id, millis);
+        return pureService.getDataAfterSleep(id, millis);
     }
 
     /**
@@ -62,6 +69,7 @@ public class GetUserCommand extends BaseHystrixCommand<UserData> {
 
     /**
      * 缓存刷新
+     *
      * @param id
      */
     public static void flushCache(Long id) {

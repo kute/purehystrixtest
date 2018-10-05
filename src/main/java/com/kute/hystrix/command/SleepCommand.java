@@ -2,6 +2,7 @@ package com.kute.hystrix.command;
 
 import com.kute.hystrix.command.base.BaseHystrixCommand;
 import com.kute.hystrix.service.PureService;
+import com.netflix.hystrix.HystrixCommandKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,8 @@ public class SleepCommand extends BaseHystrixCommand<Void> {
     private Long millis;
 
     public SleepCommand(PureService pureService, Long millis) {
+        super(setter.andCommandKey(HystrixCommandKey.Factory.asKey(SleepCommand.class.getSimpleName())));
+
         this.pureService = pureService;
         this.millis = millis;
     }
