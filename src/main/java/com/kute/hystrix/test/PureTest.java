@@ -1,30 +1,22 @@
 package com.kute.hystrix.test;
 
 import com.kute.hystrix.command.ExceptionCommand;
-import com.kute.hystrix.command.GetUserCollapser;
 import com.kute.hystrix.command.GetUserCommand;
 import com.kute.hystrix.command.SleepCommand;
 import com.kute.hystrix.domain.UserData;
 import com.kute.hystrix.service.PureService;
 import com.netflix.hystrix.exception.HystrixBadRequestException;
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
-import jdk.management.resource.internal.FutureWrapper;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.client.RestTemplate;
-import rx.Observable;
-import rx.Observer;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 /**
  * created by bailong001 on 2018/09/30 15:35

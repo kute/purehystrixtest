@@ -18,3 +18,7 @@ https://github.com/Netflix/Hystrix/wiki/Metrics-and-Monitoring
 https://it.520mwx.com/view/3835
 
 https://github.com/Netflix/Hystrix/wiki/Configuration
+
+https://github.com/Netflix/archaius/wiki/ZooKeeper-Dynamic-Configuration
+
+https://logging.apache.org/log4j/2.x/
