@@ -26,11 +26,6 @@ public class GetUserCommand extends BaseHystrixCommand<UserData> {
     private PureService pureService;
     private Long id;
 
-    /**
-     * 动态 获取属性
-     */
-    private final static DynamicLongProperty dynamicSleep = DynamicPropertyFactory.getInstance().getLongProperty(PureConstant.DYNAMIC_GETUSER_COMMAND_KEY, 4000L);
-
     public GetUserCommand(PureService pureService, Long id) {
         super(setter.andCommandKey(HystrixCommandKey.Factory.asKey(GetUserCommand.class.getSimpleName())));
 
@@ -42,7 +37,6 @@ public class GetUserCommand extends BaseHystrixCommand<UserData> {
     protected UserData run() throws Exception {
         // 动态获取配置
         Long millis = this.getProperty(PureConstant.DYNAMIC_GETUSER_COMMAND_KEY, 4000L);
-//        Long millis = dynamicSleep.get();
         LOGGER.info("GetUserCommand is executing for param={}, sleep={}", id, millis);
         return pureService.getDataAfterSleep(id, millis);
     }

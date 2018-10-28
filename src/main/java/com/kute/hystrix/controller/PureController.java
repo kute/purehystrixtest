@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
+import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 /**
@@ -47,9 +48,11 @@ public class PureController extends BaseController {
 
 //        // 动态设置值
 //        ConfigurationManager.getConfigInstance().setProperty("dynamic.default.sleep.millis", RandomUtils.nextLong(500, 4000));
-
-        GetUserCommand command = new GetUserCommand(pureService, id);
-        return command.execute();
+        LongStream.range(0, 100).forEach(i -> {
+            GetUserCommand command = new GetUserCommand(pureService, i);
+            command.execute();
+        });
+        return null;
     }
 
     @GetMapping("/getmultiuser/{ids}")
@@ -107,6 +110,7 @@ public class PureController extends BaseController {
      * 请求合并
      * 前 4 个请求，因为请求间隔很短（500ms内），所以会合并在一个线程里，第五个 间隔 1s 会新起一个线程
      * 主要用于 合并来自客户端的请求
+     *
      * @return
      */
     @GetMapping("/mergerequest")
@@ -115,7 +119,7 @@ public class PureController extends BaseController {
         List<Future<UserData>> futureList = new ArrayList<>();
         LongStream.rangeClosed(1, 5).boxed().forEach((Long index) -> {
             GetUserCollapser collapser = new GetUserCollapser(restTemplate, index);
-            if(index == 5) {
+            if (index == 5) {
                 pureService.sleep(1000);
 
                 UserData userData = collapser.execute();
@@ -124,7 +128,7 @@ public class PureController extends BaseController {
             } else {
                 futureList.add(collapser.queue()); // 这一步 就已经发起请求
 
-                if(futureList.size() == 4) {
+                if (futureList.size() == 4) {
                     futureList.forEach(future -> {
                         try {
                             UserData userData = future.get();

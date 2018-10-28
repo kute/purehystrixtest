@@ -3,6 +3,9 @@ spring:
     name: purehystrixtest
   profiles:
     active: test
+  redis:
+    cluster:
+      max-redirects:
 
 server:
   port: 8090
