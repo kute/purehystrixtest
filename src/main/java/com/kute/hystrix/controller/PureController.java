@@ -48,11 +48,16 @@ public class PureController extends BaseController {
 
 //        // 动态设置值
 //        ConfigurationManager.getConfigInstance().setProperty("dynamic.default.sleep.millis", RandomUtils.nextLong(500, 4000));
-        LongStream.range(0, 100).forEach(i -> {
-            GetUserCommand command = new GetUserCommand(pureService, i);
-            command.execute();
-        });
-        return null;
+        if(id == 100) {
+            LongStream.range(0, 100).forEach(i -> {
+                GetUserCommand command = new GetUserCommand(pureService, i);
+                command.execute();
+            });
+            return null;
+        } else {
+            GetUserCommand command = new GetUserCommand(pureService, id);
+            return command.execute();
+        }
     }
 
     @GetMapping("/getmultiuser/{ids}")

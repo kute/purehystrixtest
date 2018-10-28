@@ -36,7 +36,7 @@ public class GetUserCommand extends BaseHystrixCommand<UserData> {
     @Override
     protected UserData run() throws Exception {
         // 动态获取配置
-        Long millis = this.getProperty(PureConstant.DYNAMIC_GETUSER_COMMAND_KEY, 4000L);
+        Long millis = this.getProperty(PureConstant.DYNAMIC_GETUSER_COMMAND_KEY, 6000L);
         LOGGER.info("GetUserCommand is executing for param={}, sleep={}", id, millis);
         return pureService.getDataAfterSleep(id, millis);
     }

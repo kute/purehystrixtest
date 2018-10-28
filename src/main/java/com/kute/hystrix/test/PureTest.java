@@ -2,7 +2,6 @@ package com.kute.hystrix.test;
 
 import com.kute.hystrix.command.ExceptionCommand;
 import com.kute.hystrix.command.GetUserCommand;
-import com.kute.hystrix.command.SleepCommand;
 import com.kute.hystrix.domain.UserData;
 import com.kute.hystrix.service.PureService;
 import com.netflix.hystrix.exception.HystrixBadRequestException;
@@ -28,17 +27,6 @@ public class PureTest {
     private PureService pureService = new PureService();
 
     private RestTemplate restTemplate = new RestTemplate();
-
-    /**
-     * 同步执行，超时降级:execute()
-     */
-    @Test
-    public void test1() {
-
-        SleepCommand command = new SleepCommand(pureService, 1000 * 10L);
-
-        command.execute();
-    }
 
     /**
      * 异步执行：queue()

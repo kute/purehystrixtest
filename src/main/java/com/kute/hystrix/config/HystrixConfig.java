@@ -15,6 +15,7 @@ public class HystrixConfig {
 
     /**
      * annotation support
+     *
      * @return
      */
     @Bean
@@ -24,6 +25,7 @@ public class HystrixConfig {
 
     /**
      * cache support
+     *
      * @return
      */
     @Bean
