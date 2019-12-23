@@ -10,6 +10,7 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.netflix.hystrix.contrib.javanica.command.AsyncResult;
 import com.netflix.hystrix.contrib.javanica.conf.HystrixPropertiesManager;
 import org.apache.commons.lang3.RandomUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -166,7 +167,8 @@ public class PureService {
             },
             threadPoolProperties = {
                     @HystrixProperty(name = HystrixPropertiesManager.CORE_SIZE, value = "10"),
-                    @HystrixProperty(name = HystrixPropertiesManager.MAXIMUM_SIZE, value = "20"),
+                    @HystrixProperty(name = HystrixPropertiesManager.MAXIMUM_SIZE, value = "20"), // 只有配置了 allow
+                    @HystrixProperty(name = HystrixPropertiesManager.ALLOW_MAXIMUM_SIZE_TO_DIVERGE_FROM_CORE_SIZE, value = "true"),
                     @HystrixProperty(name = HystrixPropertiesManager.MAX_QUEUE_SIZE, value = "-1"),
                     @HystrixProperty(name = HystrixPropertiesManager.KEEP_ALIVE_TIME_MINUTES, value = "1")
             },
@@ -306,5 +308,45 @@ public class PureService {
         LOGGER.info("defaultFallback method is executing:{}", e);
         return null;
     }
+
+    private static DateTime now = null;
+
+    @HystrixCommand(groupKey = "defaultGroup", commandKey = "intervalExceptionCommand", threadPoolKey = "defaultThreadPool",
+            commandProperties = {
+                    @HystrixProperty(name = HystrixPropertiesManager.CIRCUIT_BREAKER_ENABLED, value = "true"),
+                    @HystrixProperty(name = HystrixPropertiesManager.CIRCUIT_BREAKER_REQUEST_VOLUME_THRESHOLD, value = "5"), // 失败10次开启熔断
+                    @HystrixProperty(name = HystrixPropertiesManager.CIRCUIT_BREAKER_ERROR_THRESHOLD_PERCENTAGE, value = "50"), // 失败50%开启熔断
+                    @HystrixProperty(name = HystrixPropertiesManager.CIRCUIT_BREAKER_SLEEP_WINDOW_IN_MILLISECONDS, value = "60000"), // 开启熔断后多久尝试恢复
+                    @HystrixProperty(name = HystrixPropertiesManager.EXECUTION_ISOLATION_THREAD_TIMEOUT_IN_MILLISECONDS, value = "1000"), // 超时时间，默认值3000ms
+            },
+            threadPoolProperties = {
+                    @HystrixProperty(name = HystrixPropertiesManager.CORE_SIZE, value = "10"),
+                    @HystrixProperty(name = HystrixPropertiesManager.MAXIMUM_SIZE, value = "10"),
+                    @HystrixProperty(name = HystrixPropertiesManager.ALLOW_MAXIMUM_SIZE_TO_DIVERGE_FROM_CORE_SIZE, value = "false"),
+                    @HystrixProperty(name = HystrixPropertiesManager.KEEP_ALIVE_TIME_MINUTES, value = "1")
+            },
+            fallbackMethod = "intervalExceptionFallback"
+    )
+    public Object intervalException(int normal, int exception) {
+
+        if(now == null) {
+            now = DateTime.now();
+        }
+        if(now.plusSeconds(normal).isAfterNow()) {
+            System.out.println("Normal:"+ DateTime.now().toString("yyyy-MM-dd HH:mm:ss"));
+        } else if(now.plusSeconds(exception).isAfterNow()) {
+            System.out.println("Exception:"+ DateTime.now().toString("yyyy-MM-dd HH:mm:ss"));
+            throw new RuntimeException("MyException");
+        } else {
+            System.out.println("Recover:"+ DateTime.now().toString("yyyy-MM-dd HH:mm:ss"));
+        }
+        return null;
+    }
+
+    public Object intervalExceptionFallback(int normal, int exception, Throwable throwable) {
+        System.out.println("intervalExceptionFallback throw={}"+ throwable.getMessage());
+        return null;
+    }
+
 
 }

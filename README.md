@@ -22,3 +22,7 @@ https://github.com/Netflix/Hystrix/wiki/Configuration
 https://github.com/Netflix/archaius/wiki/ZooKeeper-Dynamic-Configuration
 
 https://logging.apache.org/log4j/2.x/
+
+https://cloud.spring.io/spring-cloud-static/spring-cloud-netflix/2.0.2.RELEASE/single/spring-cloud-netflix.html
+
+javanica: http://www.60kb.com/post/89.html

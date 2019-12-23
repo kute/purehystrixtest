@@ -1,9 +1,12 @@
 package com.kute.hystrix.test;
 
+import com.kute.hystrix.command.BooleanCommand;
 import com.kute.hystrix.command.ExceptionCommand;
 import com.kute.hystrix.command.GetUserCommand;
 import com.kute.hystrix.domain.UserData;
 import com.kute.hystrix.service.PureService;
+import com.netflix.config.ConfigurationManager;
+import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.exception.HystrixBadRequestException;
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
 import org.junit.Assert;
@@ -27,6 +30,19 @@ public class PureTest {
     private PureService pureService = new PureService();
 
     private RestTemplate restTemplate = new RestTemplate();
+
+    @Test
+    public void test() {
+
+        Assert.assertTrue(new BooleanCommand().execute());
+
+        // 强制 打开熔断器
+        ConfigurationManager.getConfigInstance().setProperty("hystrix.command.BooleanCommand.circuitBreaker.forceOpen", true);
+
+        System.out.println(HystrixCommandKey.Factory.asKey(BooleanCommand.class.getSimpleName()).toString());
+
+        Assert.assertFalse(new BooleanCommand().execute());
+    }
 
     /**
      * 异步执行：queue()

@@ -161,5 +161,19 @@ public class PureController extends BaseController {
         return resultList;
     }
 
+    @GetMapping("/intervalException")
+    public void intervalException() {
+        int normal = 10;
+        int exceptin = 70;
+
+        for(;;) {
+            try{
+                pureService.intervalException(normal, exceptin);
+            } catch(Exception e){
+//                System.out.println(e.getMessage());
+            }
+        }
+    }
+
 
 }

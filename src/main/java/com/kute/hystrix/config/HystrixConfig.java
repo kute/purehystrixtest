@@ -3,6 +3,8 @@ package com.kute.hystrix.config;
 import com.netflix.hystrix.contrib.javanica.aop.aspectj.HystrixCacheAspect;
 import com.netflix.hystrix.contrib.javanica.aop.aspectj.HystrixCommandAspect;
 import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
+import com.netflix.hystrix.strategy.HystrixPlugins;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +13,13 @@ import org.springframework.context.annotation.Configuration;
  * created by bailong001 on 2018/09/30 14:20
  */
 @Configuration
+@Slf4j
 public class HystrixConfig {
+
+    static {
+        HystrixPlugins.getInstance().registerCommandExecutionHook(new PureHystricxCommandExecutionHook());
+        HystrixPlugins.getInstance().registerEventNotifier(new PureHystricxEventNotifier());
+    }
 
     /**
      * annotation support

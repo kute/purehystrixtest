@@ -39,6 +39,10 @@ public class HystrixController extends BaseController {
         LOGGER.info("Dynamic set properties:{}", paramMap);
         paramMap.forEach((key, value) -> {
             ConfigurationManager.getConfigInstance().setProperty(key, value);
+
+            // 强制打开 熔断器
+//            ConfigurationManager.getConfigInstance().setProperty("hystrix.command.{hystrixCommandKey}.circuitBreaker.forceOpen", true);
+
         });
         return null;
     }

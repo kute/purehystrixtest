@@ -113,6 +113,10 @@
             <artifactId>disruptor</artifactId>
             <version>3.3.5</version>
         </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
 
 	</dependencies>
 
